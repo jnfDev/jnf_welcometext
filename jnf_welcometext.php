@@ -20,10 +20,10 @@ class Jnf_Welcometext extends Module
 
         parent::__construct();
 
-        $this->displayName = $this->l('Welcome Text');
-        $this->description = $this->l('This plugins show two customizable messages at the Front-end. This plugin is an "admission test" for Interfell.');
+        $this->displayName = $this->trans('Welcome Text', [], 'Modules.Jnfwelcometext.Jnfwelcometext');
+        $this->description = $this->trans('This plugins show two customizable messages at the Front-end. This plugin is an "admission test" for Interfell.');
 
-        $this->confirmUninstall = $this->l('Are you sure you want to uninstall?');
+        $this->confirmUninstall = $this->trans('Are you sure you want to uninstall?', [], 'Modules.Jnfwelcometext.Jnfwelcometext');
     }
     
     public function install()
@@ -36,6 +36,11 @@ class Jnf_Welcometext extends Module
     public function uninstall()
     {
         return parent::uninstall();
+    }
+
+    public function isUsingNewTranslationSystem()
+    {
+        return true;
     }
 
     /** Hooks */
@@ -75,7 +80,7 @@ class Jnf_Welcometext extends Module
             Configuration::updateValue('JNF_WELCOMETEXT_HOME', $welcomeTextHome);
             Configuration::updateValue('JNF_WELCOMETEXT_FOOTER', $welcomeTextFooter);
 
-            $output .= $this->displayConfirmation($this->l('Settings updated'));
+            $output .= $this->displayConfirmation($this->trans('Settings updated', [], 'Modules.Jnfwelcometext.Jnfwelcometext'));
 
         }
 
@@ -90,22 +95,22 @@ class Jnf_Welcometext extends Module
         // Init Fields form array
         $fieldsForm[0]['form'] = [
             'legend' => [
-                'title' => $this->l('Welcome Texts'),
+                'title' => $this->trans('Welcome Texts', [], 'Modules.Jnfwelcometext.Jnfwelcometext'),
             ],
             'input' => [
                 [
                     'type'  => 'textarea',
-                    'label' => $this->l('Welcome Text Home'),
+                    'label' => $this->trans('Welcome Text Home', [], 'Modules.Jnfwelcometext.Jnfwelcometext'),
                     'name'  => 'JNF_WELCOMETEXT_HOME',
                 ],
                 [
                     'type'  => 'textarea',
-                    'label' => $this->l('Welcome Text Footer'),
+                    'label' => $this->trans('Welcome Text Footer', [], 'Modules.Jnfwelcometext.Jnfwelcometext'),
                     'name'  => 'JNF_WELCOMETEXT_FOOTER',
                 ]
             ],
             'submit' => [
-                'title' => $this->l('Save'),
+                'title' => $this->trans('Save', [], 'Modules.Jnfwelcometext.Jnfwelcometext'),
                 'class' => 'btn btn-default pull-right'
             ]
         ];
@@ -129,13 +134,13 @@ class Jnf_Welcometext extends Module
         $helper->submit_action = 'submit'.$this->name;
         $helper->toolbar_btn = [
             'save' => [
-                'desc' => $this->l('Save'),
+                'desc' => $this->trans('Save', [], 'Modules.Jnfwelcometext.Jnfwelcometext'),
                 'href' => AdminController::$currentIndex.'&configure='.$this->name.'&save'.$this->name.
                 '&token='.Tools::getAdminTokenLite('AdminModules'),
             ],
             'back' => [
                 'href' => AdminController::$currentIndex.'&token='.Tools::getAdminTokenLite('AdminModules'),
-                'desc' => $this->l('Back to list')
+                'desc' => $this->trans('Back to list', [], 'Modules.Jnfwelcometext.Jnfwelcometext')
             ]
         ];
 
