@@ -21,7 +21,7 @@ class Jnf_Welcometext extends Module
         parent::__construct();
 
         $this->displayName = $this->trans('Welcome Text', [], 'Modules.Jnfwelcometext.Jnfwelcometext');
-        $this->description = $this->trans('This plugins show two customizable messages at the Front-end. This plugin is an "admission test" for Interfell.');
+        $this->description = $this->trans('This plugins show two customizable messages at the Front-end. This plugin is an "admission test" for Interfell.', [], 'Modules.Jnfwelcometext.Jnfwelcometext');
 
         $this->confirmUninstall = $this->trans('Are you sure you want to uninstall?', [], 'Modules.Jnfwelcometext.Jnfwelcometext');
     }
