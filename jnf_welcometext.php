@@ -47,10 +47,12 @@ class Jnf_Welcometext extends Module
 
     public function hookDisplayHome($params)
     {
+        $currentLangId = $this->context->language->id;
+
         if ( isset( $params['hook'] ) && $params['hook'] === 'displayFooterBefore' ) {
-            $welcomeText = Configuration::get( 'JNF_WELCOMETEXT_FOOTER' );
+            $welcomeText = Tools::htmlentitiesDecodeUTF8(Configuration::get('JNF_WELCOMETEXT_FOOTER', $currentLangId));
         } else {
-            $welcomeText = Configuration::get( 'JNF_WELCOMETEXT_HOME' );
+            $welcomeText = Tools::htmlentitiesDecodeUTF8(Configuration::get('JNF_WELCOMETEXT_HOME', $currentLangId));
         }
 
         $this->context->smarty->assign([
@@ -74,8 +76,15 @@ class Jnf_Welcometext extends Module
         $output = null;
 
         if (Tools::isSubmit('submit'.$this->name)) {
-            $welcomeTextHome   = strval(Tools::getValue('JNF_WELCOMETEXT_HOME'));
-            $welcomeTextFooter = strval(Tools::getValue('JNF_WELCOMETEXT_FOOTER'));
+
+            $welcomeTextHome   = array();
+            $welcomeTextFooter = array();
+
+            $languages =  $this->context->controller->getLanguages();
+            foreach ($languages as $lang) {
+                $welcomeTextHome[$lang['id_lang']]   = Tools::safeOutput(Tools::getValue("JNF_WELCOMETEXT_HOME_". $lang['id_lang']), true);
+                $welcomeTextFooter[$lang['id_lang']] = Tools::safeOutput(Tools::getValue("JNF_WELCOMETEXT_FOOTER_". $lang['id_lang']), true);
+            }
 
             Configuration::updateValue('JNF_WELCOMETEXT_HOME', $welcomeTextHome);
             Configuration::updateValue('JNF_WELCOMETEXT_FOOTER', $welcomeTextFooter);
@@ -99,14 +108,18 @@ class Jnf_Welcometext extends Module
             ],
             'input' => [
                 [
-                    'type'  => 'textarea',
-                    'label' => $this->trans('Welcome Text Home', [], 'Modules.Jnfwelcometext.Jnfwelcometext'),
-                    'name'  => 'JNF_WELCOMETEXT_HOME',
+                    'type'         => 'textarea',
+                    'label'        => $this->trans('Welcome Text Home', [], 'Modules.Jnfwelcometext.Jnfwelcometext'),
+                    'name'         => 'JNF_WELCOMETEXT_HOME',
+                    'lang'         => true,
+                    'autoload_rte' => true
                 ],
                 [
-                    'type'  => 'textarea',
-                    'label' => $this->trans('Welcome Text Footer', [], 'Modules.Jnfwelcometext.Jnfwelcometext'),
-                    'name'  => 'JNF_WELCOMETEXT_FOOTER',
+                    'type'         => 'textarea',
+                    'label'        => $this->trans('Welcome Text Footer', [], 'Modules.Jnfwelcometext.Jnfwelcometext'),
+                    'name'         => 'JNF_WELCOMETEXT_FOOTER',
+                    'lang'         => true,
+                    'autoload_rte' => true
                 ]
             ],
             'submit' => [
@@ -129,8 +142,8 @@ class Jnf_Welcometext extends Module
 
         // Title and toolbar
         $helper->title = $this->displayName;
-        $helper->show_toolbar = true;        // false -> remove toolbar
-        $helper->toolbar_scroll = true;      // yes - > Toolbar is always visible on the top of the screen.
+        $helper->show_toolbar = true;
+        $helper->toolbar_scroll = true;
         $helper->submit_action = 'submit'.$this->name;
         $helper->toolbar_btn = [
             'save' => [
@@ -144,12 +157,27 @@ class Jnf_Welcometext extends Module
             ]
         ];
 
-        // Load current value0
-        $helper->fields_value['JNF_WELCOMETEXT_HOME']   = Tools::getValue('JNF_WELCOMETEXT_HOME', Configuration::get('JNF_WELCOMETEXT_HOME'));
-        $helper->fields_value['JNF_WELCOMETEXT_FOOTER'] = Tools::getValue('JNF_WELCOMETEXT_FOOTER', Configuration::get('JNF_WELCOMETEXT_FOOTER'));
-
+        $helper->tpl_vars = array(
+            'languages'    => $this->context->controller->getLanguages(),
+            'id_language'  => $this->context->language->id,
+            'fields_value' => $this->getConfigFormValues(),
+        );
 
         return $helper->generateForm($fieldsForm);
+    }
+
+    public function getConfigFormValues()
+    {
+        $configVar = array();
+        $languages =  $this->context->controller->getLanguages();
+
+        foreach ($languages as $lang) {
+            $idLang = (int) $lang['id_lang'];
+            $configVar['JNF_WELCOMETEXT_HOME'][$idLang]   = Tools::htmlentitiesDecodeUTF8(Configuration::get('JNF_WELCOMETEXT_HOME', $idLang));
+            $configVar['JNF_WELCOMETEXT_FOOTER'][$idLang] = Tools::htmlentitiesDecodeUTF8(Configuration::get('JNF_WELCOMETEXT_HOME', $idLang));
+        }
+
+        return $configVar;
     }
 
 }
