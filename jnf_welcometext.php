@@ -174,7 +174,7 @@ class Jnf_Welcometext extends Module
         foreach ($languages as $lang) {
             $idLang = (int) $lang['id_lang'];
             $configVar['JNF_WELCOMETEXT_HOME'][$idLang]   = Tools::htmlentitiesDecodeUTF8(Configuration::get('JNF_WELCOMETEXT_HOME', $idLang));
-            $configVar['JNF_WELCOMETEXT_FOOTER'][$idLang] = Tools::htmlentitiesDecodeUTF8(Configuration::get('JNF_WELCOMETEXT_HOME', $idLang));
+            $configVar['JNF_WELCOMETEXT_FOOTER'][$idLang] = Tools::htmlentitiesDecodeUTF8(Configuration::get('JNF_WELCOMETEXT_FOOTER', $idLang));
         }
 
         return $configVar;
